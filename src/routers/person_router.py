@@ -19,7 +19,6 @@ def read_people(
         limit: Annotated[int, Query(le=100)] = 100,
 ) :
     people = session.exec(select(Person).offset(offset).limit(limit).order_by(Person.id)).all()
-    # print(people)
     return people
 
 @router.post("/person/")
