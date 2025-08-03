@@ -3,7 +3,7 @@ from fastapi import Depends
 from sqlmodel import SQLModel, Session, create_engine
 
 server_name = "(localdb)\\mssqllocaldb"
-db_name = "fastapitest"
+db_name = "seddit_db"
 
 sql_url = f"mssql+pyodbc://@{server_name}/{db_name}?trusted_connection=yes&driver=ODBC+Driver+18+for+SQL+Server"
 
