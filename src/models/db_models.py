@@ -1,4 +1,4 @@
-from typing import  Optional
+from typing import  Optional, Literal
 from datetime import datetime
 from sqlmodel import SQLModel, Field, Session, Relationship
 from src.core.database import engine
@@ -45,13 +45,13 @@ class Vote(SQLModel, table=True):
     vote_value: int = Field
 
     post_id: int | None = Field(default=None, foreign_key="post.id")
-    post: Post | None = Relationship(back_populates="post_votes")
+    post: Optional["Post"] | None = Relationship(back_populates="post_votes")
 
     user_id: int | None = Field(default=None, foreign_key="user.id")
     user: User | None = Relationship(back_populates="user_votes")
 
     comment_id: int | None = Field(default=None, foreign_key="comment.id")
-    comment: Comment | None = Relationship(back_populates="comment_votes")
+    comment: Optional["Comment"] | None = Relationship(back_populates="comment_votes")
 
 
 
