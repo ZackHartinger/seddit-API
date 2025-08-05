@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from .core.database import create_db_and_tables, engine, SessionDep
 from .models.db_models import User, Post, Comment, Vote
-from .routers import user_router
+from .routers import user_router, post_router, comment_router, vote_router
 
 def seed_db_tables():
     with Session(engine) as session:
@@ -60,6 +60,9 @@ async def lifespan(App: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(user_router.router)
+app.include_router(post_router.router)
+app.include_router(comment_router.router)
+app.include_router(vote_router.router)
 
 @app.get("/")
 def root():

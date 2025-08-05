@@ -12,3 +12,8 @@ class PostRead(BaseModel):
 
     post_comments: list[CommentRead]
     post_votes: list[VoteRead]
+
+class PostCreate(BaseModel):
+    user_id: int
+    title: str
+    description: str

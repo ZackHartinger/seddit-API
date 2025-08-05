@@ -5,3 +5,8 @@ class VoteRead(BaseModel):
     user_id: int
     post_id: int
     comment_id: int
+
+class VoteCreate(BaseModel):
+    user_id: int
+    post_id: int
+    comment_id: int

@@ -11,3 +11,7 @@ class UserRead(BaseModel) :
     posts: list[PostRead]
     user_comments: list[CommentRead]
     user_votes: list[VoteRead]
+
+class UserCreate(BaseModel) :
+    user_name: str
+    email: str
