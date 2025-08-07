@@ -7,6 +7,7 @@ class CommentRead(BaseModel):
     post_id: int
     reply_id: int | None
     text: str
+    comment_vote_total: int | None
 
     replies: list["CommentRead"]
     comment_votes: list[VoteRead]

@@ -9,6 +9,7 @@ class PostRead(BaseModel):
     created_at: datetime
     title: str
     description: str
+    post_vote_total: int | None
 
     post_comments: list[CommentRead]
     post_votes: list[VoteRead]

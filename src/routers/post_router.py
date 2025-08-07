@@ -4,6 +4,7 @@ from sqlmodel import select, join
 from src.models.db_models import Post
 from src.core.database import SessionDep
 from src.schemas.post_schemas import PostCreate, PostRead
+from src.routers.vote_router import read_post_vote_total
 
 router = APIRouter(
     prefix="/posts",
@@ -17,8 +18,20 @@ def read_posts(
         offset: int = 0,
         limit: Annotated[int, Query(le=100)] = 100,
 ) :
-    people = session.exec(select(Post).offset(offset).limit(limit).order_by(Post.id)).all()
-    return people
+    posts = session.exec(select(Post).offset(offset).limit(limit).order_by(Post.id)).all()
+    for post in posts:
+        post.post_vote_total = read_post_vote_total(session, post.id)
+
+    return posts
+
+@router.get("/{post_id}", response_model=PostRead)
+def read_post(post_id: int, session: SessionDep) -> Post:
+    post = session.get(Post, post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found.")
+    if post:
+        post.post_vote_total = read_post_vote_total(session, post.id)
+    return post
 
 @router.post("/post", response_model=PostRead)
 def create_post(post: PostCreate, session: SessionDep) -> Post:
