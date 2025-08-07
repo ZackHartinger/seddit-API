@@ -4,3 +4,4 @@ types-redis
 uvicorn
 sqlmodel
 pyodbc
+alembic
