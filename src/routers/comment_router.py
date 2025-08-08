@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException,Query
 from sqlmodel import select, join
 from src.models.db_models import Comment
 from src.core.database import SessionDep
-from src.schemas.comment_schema import CommentRead, CommentCreate
+from src.schemas.comment_schema import CommentRead, CommentCreate, CommentEdit
 from src.routers.vote_router import read_comment_vote_total
 
 router = APIRouter(
@@ -38,4 +38,24 @@ def create_comment(comment: CommentCreate, session: SessionDep) -> Comment:
     session.add(db_comment)
     session.commit()
     session.refresh(db_comment)
+    return db_comment
+
+@router.patch("/{comment_id}", response_model=CommentRead)
+def edit_comment(comment_id: int, comment: CommentEdit, session: SessionDep) -> Comment:
+    db_comment = session.get(Comment, comment_id)
+    if not db_comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    db_comment.text = comment.text
+    session.add(db_comment)
+    session.commit()
+    session.refresh(db_comment)
+    return db_comment
+
+@router.delete("/{comment_id}", response_model=Comment)
+def delete_comment(comment_id:int, session: SessionDep) -> Comment:
+    db_comment = session.get(Comment, comment_id)
+    if not db_comment:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    session.delete(db_comment)
+    session.commit()
     return db_comment

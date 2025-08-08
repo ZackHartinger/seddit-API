@@ -17,3 +17,6 @@ class CommentCreate(BaseModel):
     post_id: int | None
     reply_id: int | None
     text: str
+
+class CommentEdit(BaseModel):
+    text: str
