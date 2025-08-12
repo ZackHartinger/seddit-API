@@ -15,9 +15,9 @@ class CommentVoteRead(VoteRead):
 class PostVoteCreate(BaseModel):
     user_id: int
     post_id: int
-    vote_value: Literal[0, 1]
+    vote_value: Literal[-1, 1]
 
 class CommentVoteCreate(BaseModel):
     user_id: int
     comment_id: int
-    vote_value: Literal[0, 1]
+    vote_value: Literal[-1, 1]

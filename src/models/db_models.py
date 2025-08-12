@@ -17,7 +17,7 @@ class Post(SQLModel, table=True):
     created_at : datetime = Field(default_factory=datetime.now)
     title: str = Field
     description: str | None = Field(default=None)
-    post_vote_total: int | None = Field(default=None)
+    post_vote_total: int | None = Field(default=1)
 
     user_id: int | None = Field(default=None, foreign_key="user.id")
     user: User | None = Relationship(back_populates="posts")
@@ -28,7 +28,7 @@ class Post(SQLModel, table=True):
 class Comment(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     text: str = Field
-    comment_vote_total: int | None = Field(default=None)
+    comment_vote_total: int | None = Field(default=1)
 
     reply_id: int | None = Field(default=None, foreign_key="comment.id")
     parent_comment: Optional["Comment"] = Relationship(back_populates="replies", sa_relationship_kwargs={"remote_side": "Comment.id"})
@@ -44,7 +44,7 @@ class Comment(SQLModel, table=True):
 
 class Vote(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    vote_value: int = Field
+    vote_value: int = Field(default=1)
 
     post_id: int | None = Field(default=None, foreign_key="post.id")
     post: Optional["Post"] | None = Relationship(back_populates="post_votes")

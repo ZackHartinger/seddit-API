@@ -33,6 +33,8 @@ def read_post(post_id: int, session: SessionDep) -> Post:
         raise HTTPException(status_code=404, detail="Post not found.")
     if post:
         post.post_vote_total = read_post_vote_total(session, post.id)
+        for comment in post.post_comments:
+            comment.comment_vote_total = read_comment_vote_total(session, comment.id)
     return post
 
 @router.post("/post", response_model=PostRead)
