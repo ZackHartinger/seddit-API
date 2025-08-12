@@ -2,10 +2,12 @@ from pydantic import BaseModel
 from datetime import datetime
 from .comment_schema import CommentRead
 from .vote_schema import VoteRead
+from src.models.db_models import User
 
 class PostRead(BaseModel):
     id: int
     user_id: int
+    user: User
     created_at: datetime
     title: str
     description: str

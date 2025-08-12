@@ -3,11 +3,12 @@ from .comment_schema import CommentRead
 from .post_schemas import PostRead
 from .vote_schema import VoteRead
 
-class UserRead(BaseModel) :
+class UserRead(BaseModel):
     id: int
     user_name: str
     email: str
 
+class UserWithPostsAndCommentsRead(UserRead) :
     posts: list[PostRead]
     user_comments: list[CommentRead]
     user_votes: list[VoteRead]

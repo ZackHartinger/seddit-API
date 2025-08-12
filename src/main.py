@@ -1,6 +1,7 @@
 from typing import Annotated
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from .core.database import create_db_and_tables, engine, SessionDep
 from .models.db_models import User, Post, Comment, Vote
@@ -58,6 +59,14 @@ async def lifespan(App: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins="http://localhost:5173",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(user_router.router)
 app.include_router(post_router.router)

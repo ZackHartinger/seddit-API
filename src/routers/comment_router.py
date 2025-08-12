@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException,Query
 from sqlmodel import select, join
 from src.models.db_models import Comment
 from src.core.database import SessionDep
-from src.schemas.comment_schema import CommentRead, CommentCreate, CommentEdit
+from src.schemas.comment_schema import CommentRead, CommentCreate, ReplyCreate, CommentEdit
 from src.routers.vote_router import read_comment_vote_total
 
 router = APIRouter(
@@ -21,6 +21,8 @@ def read_comments(
     comments = session.exec(select(Comment).offset(offset).limit(limit).order_by(Comment.id)).all()
     for comment in comments:
         comment.comment_vote_total = read_comment_vote_total(session, comment.id)
+        for reply in comment.replies:
+            reply.comment_vote_total = read_comment_vote_total(session, reply.id)
     return comments
 
 @router.get("/{comment_id}", response_model=CommentRead)
@@ -34,6 +36,14 @@ def read_comment(comment_id: int, session: SessionDep) -> Comment:
 
 @router.post("/comment", response_model=CommentRead)
 def create_comment(comment: CommentCreate, session: SessionDep) -> Comment:
+    db_comment = Comment.model_validate(comment)
+    session.add(db_comment)
+    session.commit()
+    session.refresh(db_comment)
+    return db_comment
+
+@router.post("/reply/", response_model=CommentRead)
+def create_reply(comment: ReplyCreate, session: SessionDep) -> Comment:
     db_comment = Comment.model_validate(comment)
     session.add(db_comment)
     session.commit()

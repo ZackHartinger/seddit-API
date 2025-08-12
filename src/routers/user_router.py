@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException,Query
 from sqlmodel import select, join
 from src.models.db_models import User
 from src.core.database import SessionDep
-from src.schemas.user_schemas import UserRead, UserCreate
+from src.schemas.user_schemas import UserWithPostsAndCommentsRead, UserCreate
 from sqlalchemy.orm import joinedload
 
 
@@ -13,7 +13,7 @@ router = APIRouter(
     responses={404: {"description": "Not Found"}},
 )
 
-@router.get("/", response_model=list[UserRead])
+@router.get("/", response_model=list[UserWithPostsAndCommentsRead])
 def read_users(
         session: SessionDep,
         offset: int = 0,
@@ -22,14 +22,14 @@ def read_users(
     people = session.exec(select(User).offset(offset).limit(limit).order_by(User.id)).all()
     return people
 
-@router.get("/{user_id}", response_model=UserRead)
+@router.get("/{user_id}", response_model=UserWithPostsAndCommentsRead)
 def read_user(user_id: int, session: SessionDep) -> User:
     user = session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.post("/user/", response_model=UserRead)
+@router.post("/user/", response_model=UserWithPostsAndCommentsRead)
 def create_person(user: UserCreate, session: SessionDep) -> User:
     db_user = User.model_validate(user)
     session.add(db_user)

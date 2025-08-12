@@ -1,10 +1,10 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException,Query
 from sqlmodel import select, join
-from src.models.db_models import Post
+from src.models.db_models import Post, Comment
 from src.core.database import SessionDep
 from src.schemas.post_schemas import PostCreate, PostRead, PostEdit
-from src.routers.vote_router import read_post_vote_total
+from src.routers.vote_router import read_post_vote_total, read_comment_vote_total
 
 router = APIRouter(
     prefix="/posts",
@@ -21,6 +21,8 @@ def read_posts(
     posts = session.exec(select(Post).offset(offset).limit(limit).order_by(Post.id)).all()
     for post in posts:
         post.post_vote_total = read_post_vote_total(session, post.id)
+        for comment in post.post_comments:
+            comment.comment_vote_total = read_comment_vote_total(session, comment.id)
 
     return posts
 
